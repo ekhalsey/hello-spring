@@ -1,50 +1,45 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class HelloController {
 
-    //Handles requests at /hello
-    @GetMapping("hello") //should handle Get requests only
-    @ResponseBody //returns plain text response, wont use once there are templates
-    public String hello() {
-        return "Hello, Spring!";
+
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "hello2")
+    public String hello2(@RequestParam String name, Model model) {
+        String greeting = "Hello there, " + name + "!";
+        model.addAttribute("greeting", greeting);
+        return "hello2";
     }
 
-    //handles requests at /goodbye
-    @GetMapping("goodbye") //should handle Get requests only
-    @ResponseBody //returns plain text response, wont use once there are templates
-    public String goodbye() {
-        return "Goodbye, Spring!";
+
+
+    @GetMapping("hello2/{name}")
+    public String helloPath(@PathVariable String name, Model model) {
+        String greeting = "hello to you, " + name + "!";
+        model.addAttribute("greeting", greeting);
+        return "hello2";
     }
 
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "demonName")
-    @ResponseBody
-    public String banishParam(@RequestParam String demonName) {
-        return "get thee hence, " + demonName + "!";
-
+    @GetMapping("form") //static
+    public String form () {
+        return "form";
     }
 
-    @GetMapping("hello/{flowers}")
-    @ResponseBody
-    public String helloPath(@PathVariable String flowers) {
-        return "i like " + flowers + "!";
-    }
-
-    @GetMapping("form")
-    @ResponseBody
-    public String banishForm () {
-        return "<html>" +
-                "<body>" +
-                "<form action='demonName' method='post'>" +
-                "<input type='text' name='demonName'>" +
-                "<input type='submit' value='Banish Me!'>" +
-                "</form>" +
-                "</body>" +
-                "</html>";
+    @GetMapping("hello-names")
+    public String helloNames(Model model) {
+        List<String> names = new ArrayList<>();
+        names.add("valerie");
+        names.add("jaxen");
+        names.add("molly");
+        model.addAttribute("names", names);
+        return "hello-list";
     }
 }
